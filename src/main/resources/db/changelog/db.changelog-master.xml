@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- Master Table -->
+
+    <changeSet id="1" author="om">
+
+        <createTable tableName="department">
+
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="department_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <!-- Transactional Table -->
+
+    <changeSet id="2" author="om">
+
+        <createTable tableName="employee_record">
+
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="employee_name" type="VARCHAR(100)"/>
+
+            <column name="salary" type="DOUBLE"/>
+
+        </createTable>
+
+    </changeSet>
+
+    <!-- Update Existing Table -->
+
+    <changeSet id="3" author="om">
+
+        <addColumn tableName="employee_record">
+
+            <column name="email" type="VARCHAR(100)"/>
+
+        </addColumn>
+
+    </changeSet>
+
+</databaseChangeLog>
