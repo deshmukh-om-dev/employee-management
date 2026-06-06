@@ -9,7 +9,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(
             MethodArgumentNotValidException.class) //handles all validation errors
     @ResponseStatus(HttpStatus.BAD_REQUEST) //is used to return proper HTTP status code 400 when validation exception occurs
-    public Map<String, String> handleValidationExceptions( //mapm cretaed to store
+    public Map<String, String> handleValidationExceptions( //map created to store
             MethodArgumentNotValidException ex) {
         Map<String, String> errors =
                 new HashMap<>();

@@ -1,41 +1,141 @@
 package com.employee.employee_management.controller;
-import com.employee.employee_management.entity.Employee; //imports employee class
+
+import com.employee.employee_management.entity.Employee;
 import com.employee.employee_management.service.EmployeeService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired; //imports dependency injection annotations
-import org.springframework.web.bind.annotation.*; //Imports all REST API annotations together
-import java.util.List; //imports list
-import java.util.Optional; //imports optional class
-@RestController //this class handles REST APIs and returns JSON responses
-@RequestMapping("/employees") //sets base URL when u check in postman
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/employees")
+@Slf4j
 public class EmployeeController {
-    @Autowired //dependency injection
-    private EmployeeService employeeService; // service object injected
-    @PostMapping //handles adding of elements like adding of employee
-    public Employee addEmployee(
-            @Valid @RequestBody Employee employee) { //triggers validation annotations
-        return employeeService.addEmployee(employee);
-    }
-    @GetMapping //fetches all employees
-    public List<Employee> getAllEmployees() {
-        return employeeService.getAllEmployees();
-    }
-    @GetMapping("/{id}") //fetches all employees by id
-    public Optional<Employee> getEmployeeById(
-            @PathVariable Long id) { //takes id from URL
-        return employeeService.getEmployeeById(id);
-    }
-    @PutMapping("/{id}") //updates the employee details
-    public Employee updateEmployee(
-            @PathVariable Long id,//takes id from URLs
+
+    @Autowired
+    private EmployeeService employeeService;
+
+    @PostMapping
+    public ResponseEntity<?> addEmployee(
             @Valid @RequestBody Employee employee) {
-        employee.setId(id);
-        return employeeService.updateEmployee(employee);
+
+        try {
+
+            log.info("Inside EmployeeController addEmployee()");
+
+            Employee savedEmployee =
+                    employeeService.addEmployee(employee);
+
+            log.info("Employee created successfully with ID: {}",
+                    savedEmployee.getId());
+
+            return ResponseEntity.ok(savedEmployee);
+
+        } catch (Exception exception) {
+
+            log.error("Inside EmployeeController addEmployee() Error: ",
+                    exception);
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(exception.getMessage());
+        }
     }
-    @DeleteMapping("/{id}") //deletes employee using id
-    public String deleteEmployee(
-            @PathVariable Long id) {//takes id from URL
-        employeeService.deleteEmployee(id);
-        return "Employee Deleted Successfully";
+
+    @GetMapping
+    public ResponseEntity<?> getAllEmployees() {
+
+        try {
+
+            log.info("Inside EmployeeController getAllEmployees()");
+
+            return ResponseEntity.ok(
+                    employeeService.getAllEmployees());
+
+        } catch (Exception exception) {
+
+            log.error("Inside EmployeeController getAllEmployees() Error: ",
+                    exception);
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(exception.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getEmployeeById(
+            @PathVariable Long id) {
+
+        try {
+
+            log.info("Fetching employee with ID: {}", id);
+
+            return ResponseEntity.ok(
+                    employeeService.getEmployeeById(id));
+
+        } catch (Exception exception) {
+
+            log.error("Employee not found with ID: {}", id, exception);
+
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(exception.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateEmployee(
+            @PathVariable Long id,
+            @Valid @RequestBody Employee employee) {
+
+        try {
+
+            log.info("Updating employee with ID: {}", id);
+
+            employee.setId(id);
+
+            Employee updatedEmployee =
+                    employeeService.updateEmployee(employee);
+
+            log.info("Employee updated successfully");
+
+            return ResponseEntity.ok(updatedEmployee);
+
+        } catch (Exception exception) {
+
+            log.error("Error updating employee with ID: {}", id, exception);
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(exception.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteEmployee(
+            @PathVariable Long id) {
+
+        try {
+
+            log.info("Deleting employee with ID: {}", id);
+
+            employeeService.deleteEmployee(id);
+
+            log.info("Employee deleted successfully");
+
+            return ResponseEntity.ok(
+                    "Employee Deleted Successfully");
+
+        } catch (Exception exception) {
+
+            log.error("Error deleting employee with ID: {}", id, exception);
+
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(exception.getMessage());
+        }
     }
 }

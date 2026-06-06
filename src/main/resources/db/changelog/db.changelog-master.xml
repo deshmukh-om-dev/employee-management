@@ -8,11 +8,8 @@
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <!-- Master Table -->
-
     <changeSet id="1" author="om">
-
         <createTable tableName="department">
-
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
@@ -20,15 +17,11 @@
             <column name="department_name" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
-
         </createTable>
-
     </changeSet>
 
     <!-- Transactional Table -->
-
     <changeSet id="2" author="om">
-
         <createTable tableName="employee_record">
 
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -40,18 +33,74 @@
             <column name="salary" type="DOUBLE"/>
 
         </createTable>
-
     </changeSet>
 
     <!-- Update Existing Table -->
-
     <changeSet id="3" author="om">
-
         <addColumn tableName="employee_record">
 
             <column name="email" type="VARCHAR(100)"/>
 
         </addColumn>
+    </changeSet>
+
+    <!-- Gender Master Table -->
+    <changeSet id="4" author="om">
+
+        <createTable tableName="gender_master">
+
+            <column name="gender_id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="gender_name" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <!-- Insert Gender Data -->
+    <changeSet id="5" author="om">
+
+        <insert tableName="gender_master">
+            <column name="gender_id" valueNumeric="1"/>
+            <column name="gender_name" value="Male"/>
+        </insert>
+
+        <insert tableName="gender_master">
+            <column name="gender_id" valueNumeric="2"/>
+            <column name="gender_name" value="Female"/>
+        </insert>
+
+        <insert tableName="gender_master">
+            <column name="gender_id" valueNumeric="3"/>
+            <column name="gender_name" value="Others"/>
+        </insert>
+
+    </changeSet>
+
+    <!-- Add Gender ID Column -->
+    <changeSet id="6" author="om">
+
+        <addColumn tableName="employee_record">
+
+            <column name="gender_id" type="BIGINT"/>
+
+        </addColumn>
+
+    </changeSet>
+
+    <!-- Add Foreign Key Mapping -->
+    <changeSet id="7" author="om">
+
+        <addForeignKeyConstraint
+                baseTableName="employee_record"
+                baseColumnNames="gender_id"
+                referencedTableName="gender_master"
+                referencedColumnNames="gender_id"
+                constraintName="fk_employee_gender"/>
 
     </changeSet>
 

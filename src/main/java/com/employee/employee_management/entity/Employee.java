@@ -1,27 +1,27 @@
-//Employee.java is the Entity layer which maps Java objects to PostgreSQL table using Hibernate/JPA annotations
-package com.employee.employee_management.entity; //java becomes a database here with employee table
-import jakarta.persistence.*; // importing valid annotations
+package com.employee.employee_management.entity;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
-
-@Entity //java becomes a database here with employee table
+@Entity
+@Table(name = "employee")
 public class Employee {
-
-    @Id //primary key of the table
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //id auto increments automatically as the entries increase
-    //id, name, email, department, salary and join date are columns of the table
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "Name cannot be empty") //name should not be empty
+    @NotBlank(message = "Name cannot be empty")
     private String name;
-    @Email(message = "Enter valid email") //checks proper email format
+    @Email(message = "Enter valid email")
     private String email;
     private String department;
-    @Positive(message = "Salary must be greater than 0") // checks that salary must be greater than 0 i.e positive
+    @Positive(message = "Salary must be greater than 0")
     private double salary;
     private LocalDate joiningDate;
-    public Employee() { //constructor getters and setters to access and modify object data
+    @ManyToOne
+    @JoinColumn(name = "gender_id")
+    private GenderMaster gender;
+    public Employee() {
     }
     public Long getId() {
         return id;
@@ -58,5 +58,11 @@ public class Employee {
     }
     public void setJoiningDate(LocalDate joiningDate) {
         this.joiningDate = joiningDate;
+    }
+    public GenderMaster getGender() {
+        return gender;
+    }
+    public void setGender(GenderMaster gender) {
+        this.gender = gender;
     }
 }

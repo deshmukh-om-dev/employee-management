@@ -1,27 +1,144 @@
 package com.employee.employee_management.service;
+
 import com.employee.employee_management.entity.Employee;
 import com.employee.employee_management.repository.EmployeeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Optional;
-@Service //it is spring component that creates objects automatically (shortening the code)
+
+@Service
+@Slf4j
 public class EmployeeService {
-    @Autowired //dependency injection - spring automatically injects repository object no need to manually create
+
+    @Autowired
     private EmployeeRepository employeeRepository;
-    public Employee addEmployee(Employee employee) { //save employee to database
-        return employeeRepository.save(employee);
+
+    public Employee addEmployee(Employee employee) {
+
+        try {
+
+            log.info("Inside EmployeeService addEmployee()");
+
+            Employee savedEmployee =
+                    employeeRepository.save(employee);
+
+            log.info("Employee saved successfully with ID: {}",
+                    savedEmployee.getId());
+
+            return savedEmployee;
+
+        } catch (Exception exception) {
+
+            log.error("Error while saving employee: ",
+                    exception);
+
+            throw exception;
+        }
     }
-    public List<Employee> getAllEmployees() { //fetching all employees
-        return employeeRepository.findAll();
+
+    public List<Employee> getAllEmployees() {
+
+        try {
+
+            log.info("Inside EmployeeService getAllEmployees()");
+
+            return employeeRepository.findAll();
+
+        } catch (Exception exception) {
+
+            log.error("Error while fetching employees: ",
+                    exception);
+
+            throw exception;
+        }
     }
-    public Optional<Employee> getEmployeeById(Long id) { //fetching all employees using their ids
-        return employeeRepository.findById(id);
+
+    public Employee getEmployeeById(Long id) {
+
+        try {
+
+            log.info("Fetching employee with ID: {}", id);
+
+            return employeeRepository.findById(id)
+                    .orElseThrow(() -> {
+
+                        log.error("Employee not found with ID: {}", id);
+
+                        return new RuntimeException(
+                                "Employee with ID " + id + " not found");
+                    });
+
+        } catch (Exception exception) {
+
+            log.error("Error while fetching employee: ",
+                    exception);
+
+            throw exception;
+        }
     }
-    public Employee updateEmployee(Employee employee) { //updates existing employees
-        return employeeRepository.save(employee);
+
+    public Employee updateEmployee(Employee employee) {
+
+        try {
+
+            if (!employeeRepository.existsById(employee.getId())) {
+
+                log.error("Employee not found with ID: {}",
+                        employee.getId());
+
+                throw new RuntimeException(
+                        "Employee with ID "
+                                + employee.getId()
+                                + " not found");
+            }
+
+            log.info("Updating employee with ID: {}",
+                    employee.getId());
+
+            Employee updatedEmployee =
+                    employeeRepository.save(employee);
+
+            log.info("Employee updated successfully");
+
+            return updatedEmployee;
+
+        } catch (Exception exception) {
+
+            log.error("Error while updating employee: ",
+                    exception);
+
+            throw exception;
+        }
     }
-    public void deleteEmployee(Long id) { //deletes employees 
-        employeeRepository.deleteById(id);
+
+    public void deleteEmployee(Long id) {
+
+        try {
+
+            Employee employee =
+                    employeeRepository.findById(id)
+                            .orElseThrow(() -> {
+
+                                log.error("Employee not found with ID: {}", id);
+
+                                return new RuntimeException(
+                                        "Employee with ID "
+                                                + id
+                                                + " not found");
+                            });
+
+            employeeRepository.delete(employee);
+
+            log.info("Employee deleted successfully");
+
+        } catch (Exception exception) {
+
+            log.error("Error while deleting employee: ",
+                    exception);
+
+            throw exception;
+        }
     }
 }

@@ -1,8 +1,6 @@
 package com.employee.employee_management;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 @SpringBootApplication
 public class EmployeeManagementApplication {
 
@@ -18,5 +16,9 @@ public class EmployeeManagementApplication {
   "department": "AI and Robotics",
   "salary": 50000,
   "joiningDate": "2026-05-29"
+  gender:{
+  
+  }
+
 }
  */
